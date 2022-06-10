@@ -1,0 +1,24 @@
+<html>
+<head>
+     <style>
+        .wrapper { background-color:#eee;
+                 padding:10px 20px; }
+        img {width: 50%;}
+     </style>
+</head>
+<body>
+     <div class="wrapper">
+         {% for i in a %}
+            <p>{{i}}</p>
+         {% endfor %}
+        <p style="background-color:red; padding:10px 20px;">Salut!</p>
+        <p>Cela ressemble à un excellent
+            <a href="http://www.yummly.com/recipe/Roasted-Asparagus-Epicurious-203718">
+                recipie
+            </a> déjeuner.
+        </p>
+        <img src="cid:{{ test_webp }} " />
+        <img src="cid:{{ logo_png }} " />
+     </div>
+</body>
+</html>
