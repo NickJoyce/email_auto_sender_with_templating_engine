@@ -69,15 +69,10 @@ class Message:
 
 
     def send(self, smpt_host:str, port:int, login:str, password:str,):
-        # установление соедениения почтовым провайдером с настройками шифрования
         smtp_obj = smtplib.SMTP_SSL(smpt_host, port)
-        # Отправка приветсвия серверу
         smtp_obj.ehlo()
-        # Выполнение процедуры входа на SMTP-сервер
         smtp_obj.login(login, password)
-        # Отправка почты
         smtp_obj.send_message(self.msg)
-        # Разрыв соеденения с SMTP-сервером
         smtp_obj.quit()
 
 
