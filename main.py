@@ -3,25 +3,24 @@ import smtplib
 from email.message import EmailMessage
 from email.headerregistry import Address
 from email.utils import make_msgid
-from jinja2 import Template
 import imghdr
+
+from jinja2 import Template
 
 
 class Message:
-    def __init__(self, subject:str, from_: Address, to:Address):
+    def __init__(self, subject: str, from_: Address, to: Address):
         self.msg = EmailMessage()
         self.msg['subject'] = subject
         self.msg['from'] = from_
         self.msg['To'] = to
 
-
-    def add_plain_text(self, file:str):
+    def add_plain_text(self, file: str):
         """add the plain text to the message from txt file"""
         with open(file) as f:
             self.msg.set_content(f.read())
 
-
-    def add_html(self, html:str, template_images:list[str] = None, template_vars:dict = None):
+    def add_html(self, html: str, template_images: list[str] = None, template_vars: dict = None):
         """add the html part to the message"""
         img_dict = {}
         # add modified file name as a key and cid as a value to the dictionary
@@ -42,15 +41,14 @@ class Message:
             self.msg.add_alternative(t.render(**img_dict), subtype='html')
 
         if template_images:
-        # adds images to html
+            # adds images to html
             for image in template_images:
                 with open(image, 'rb') as img:
                     img_data = img.read()
                     template_filename = os.path.basename(image).replace('.', '_')
                     ind = len(self.msg.get_payload())-1
                     self.msg.get_payload()[ind].add_related(img_data, 'image', imghdr.what(None, img_data),
-                                                          cid=img_dict[template_filename], filename=image)
-
+                                                            cid=img_dict[template_filename], filename=image)
 
     def attach_images(self, img_list: list[str]):
         """add the html part to the message"""
@@ -59,16 +57,14 @@ class Message:
                 img_data = f.read()
             self.msg.add_attachment(img_data, maintype='image', subtype=imghdr.what(None, img_data), filename=file)
 
-
     def attach_app_files(self, app_files: list[str]):
-        """attach files with internal format of the application programm: pdf, docx, xlsx, etc. from files list"""
+        """attach files with internal format of the application programme: pdf, docx, xlsx, etc. from files list"""
         for file in app_files:
             with open(file, 'rb') as attached_file:
                 attached_file_data = attached_file.read()
             self.msg.add_attachment(attached_file_data, maintype='application', subtype='octet-stream', filename=file)
 
-
-    def send(self, smpt_host:str, port:int, login:str, password:str,):
+    def send(self, smpt_host: str, port: int, login: str, password: str,):
         smtp_obj = smtplib.SMTP_SSL(smpt_host, port)
         smtp_obj.ehlo()
         smtp_obj.login(login, password)
@@ -94,5 +90,3 @@ if __name__ == "__main__":
         message.attach_app_files(['./test.pdf', './test.docx', './test.xlsx'])
         message.send(SMTP_HOST, PORT, LOGIN, PASSWORD)
         print(f"{TO} - has been sent")
-
-
